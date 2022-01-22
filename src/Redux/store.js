@@ -1,4 +1,10 @@
-import { createStore } from "redux";
-import { reducer } from "./reducer";
+import { createStore, combineReducers } from "redux";
+import authReducer from "./auth/reducer";
+import appReducer from "./app/reducer";
 
-export const store = createStore(reducer);
+const rootReducer = combineReducers({
+    auth: authReducer,
+    app: appReducer
+});
+
+export const store = createStore(rootReducer);

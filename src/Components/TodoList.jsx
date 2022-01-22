@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { getTodosFailure, getTodosRequest, getTodosSuccess, removeTodoItem, toggleTodooItem } from "../Redux/action";
+import { getTodosFailure, getTodosRequest, getTodosSuccess, removeTodoItem, toggleTodooItem } from "../Redux/app/action";
 
 function TodoItem({ title, status, id, getTodos }) {
   const dispatch = useDispatch();
@@ -49,7 +49,7 @@ function TodoItem({ title, status, id, getTodos }) {
 }
 
 export default function TodoList({getTodos}) {
-  const {todos, isLoading, isError} = useSelector((state) => state, shallowEqual);
+  const {todos, isLoading, isError} = useSelector((state) => state.app, shallowEqual);
 
   const dispatch = useDispatch();
 
