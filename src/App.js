@@ -1,14 +1,15 @@
-import { Provider } from "react-redux";
 import Todo from "./Components/Todo";
 import "./styles.css";
-import { store } from "./Redux/store";
+import Login from "./Components/Login/Login";
+import { useSelector } from "react-redux";
 
 export default function App() {
-  return (
-    <Provider store={store}>
-      <div className="App">
+  const isAuth = useSelector(state => state.isAuth);
+  const token = useSelector(state => state.token);
+  
+  return isAuth ? (   
+      <div className="App"> 
         <Todo />
       </div>
-    </Provider>
-  );
+  ) : (<Login/>)
 }

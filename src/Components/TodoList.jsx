@@ -1,23 +1,37 @@
+import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { removeTodoItem, toggleTodooItem } from "../Redux/action";
+import { getTodosFailure, getTodosRequest, getTodosSuccess, removeTodoItem, toggleTodooItem } from "../Redux/action";
 
-function TodoItem({ title, status, id }) {
+function TodoItem({ title, status, id, getTodos }) {
   const dispatch = useDispatch();
 
-  const handleDelete = (id) => {
-    const action = removeTodoItem({
-      id
-    });
-    dispatch(action);
+  const handleDelete = async (id) => {
+    // const action = removeTodoItem({
+    //   id
+    // });
+    // dispatch(action);
+
+    const config = {
+      method: 'DELETE'
+    }
+
+    await fetch(`https://todo-task-mock-server.herokuapp.com/todos/${id}`, config);
+
+    getTodos();
+
   };
 
-  const handleToggle = (id, status) => {
+  const handleToggle = async (id, status) => {
     const action = toggleTodooItem({
       id,
       status
     });
 
     dispatch(action);
+    // const config = {
+    //   method: 'PATCH',
+    //   body: {}
+    // }
   };
   return (
     <div style={{ display: "flex", padding: "1rem", justifyContent: "center" }}>
@@ -34,17 +48,35 @@ function TodoItem({ title, status, id }) {
   );
 }
 
-export default function TodoList() {
-  const {todos} = useSelector((state) => {
-    return {
-      todos: state.todos
-    } 
-  }, shallowEqual);
+export default function TodoList({getTodos}) {
+  const {todos, isLoading, isError} = useSelector((state) => state, shallowEqual);
+
+  const dispatch = useDispatch();
+
+  // const getTodos = () => {
+  //   const reqAction = getTodosRequest();
+  //   dispatch(reqAction);
+
+  //   return fetch("https://todo-task-mock-server.herokuapp.com/todos")
+  //           .then(res => res.json())
+  //           .then(res => {
+  //             dispatch(getTodosSuccess(res));
+  //           })
+  //           .catch(err => {
+  //             dispatch(getTodosFailure())
+  //           })
+  // }
+
+  useEffect( () => {
+    getTodos();
+  }, [])
 
   return (
     <div>
+      {isLoading && <h3>Loading....</h3>}
+      {isError && <h3>Something's wrong!</h3>}
       {todos.map((item) => (
-        <TodoItem key={item.id} {...item} />
+        <TodoItem key={item.id} {...item} getTodos={getTodos}/>
       ))}
     </div>
   );
